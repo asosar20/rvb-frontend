@@ -7,21 +7,29 @@ localforage.config({
 })
 
 export async function guardarCasas(casas: any[]) {
-  await localforage.setItem('casas', casas)
+  await localforage.setItem("casas", casas);
 }
 
 export async function obtenerCasas(): Promise<CasaRespuesta | null> {
-  return await localforage.getItem('casas')
+  return await localforage.getItem("casas");
 }
 
 export async function limpiarCasas() {
-  await localforage.removeItem('casas')
+  await localforage.removeItem("casas");
 }
 
 export async function guardarUltimaFecha(fecha: string) {
-  await localforage.setItem('ultimaActualizacion', fecha)
+  await localforage.setItem("ultimaActualizacion", fecha);
 }
 
 export async function obtenerUltimaFecha(): Promise<string | null> {
-  return await localforage.getItem('ultimaActualizacion')
+  return await localforage.getItem("ultimaActualizacion");
+}
+
+export async function guardarUltimaRevisionLocal(fecha: string) {
+  await localforage.setItem("ultimaRevisionLocal", fecha);
+}
+
+export async function obtenerUltimaRevisionLocal(): Promise<string | null> {
+  return await localforage.getItem("ultimaRevisionLocal");
 }

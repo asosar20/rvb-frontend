@@ -2,7 +2,7 @@ export interface Casa {
   id: string
   etapa: string
   manzana: string
-  lote: number
+  lote: string
   ubicacion: string
   aplica_calle: boolean
   aplica_parque: boolean
