@@ -18,18 +18,10 @@ export async function limpiarCasas() {
   await localforage.removeItem("casas");
 }
 
-export async function guardarUltimaFecha(fecha: string) {
-  await localforage.setItem("ultimaActualizacion", fecha);
+export async function guardarUltimaFechaLocal(fecha: string) {
+  await localforage.setItem("ultimaFechaLocal", fecha);
 }
 
-export async function obtenerUltimaFecha(): Promise<string | null> {
-  return await localforage.getItem("ultimaActualizacion");
-}
-
-export async function guardarUltimaRevisionLocal(fecha: string) {
-  await localforage.setItem("ultimaRevisionLocal", fecha);
-}
-
-export async function obtenerUltimaRevisionLocal(): Promise<string | null> {
-  return await localforage.getItem("ultimaRevisionLocal");
+export async function obtenerUltimaFechaLocal(): Promise<string | null> {
+  return await localforage.getItem("ultimaFechaLocal");
 }
