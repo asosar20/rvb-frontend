@@ -1,5 +1,6 @@
 <template>
-    <div class="p-6 font-sans text-sm text-black bg-white max-w-xl mx-auto space-y-6 border border-gray-300 shadow-md">
+    <div
+        class="m-6 p-6 font-sans text-sm text-black bg-white max-w-xl mx-auto space-y-6 border border-gray-300 shadow-md">
         <!-- Encabezado -->
         <div class="flex justify-between items-center border-b pb-4">
             <img src="../assets/img/logo.png" alt="Logo Arena" class="h-12" />
@@ -12,32 +13,36 @@
             <tbody>
                 <tr class="border-b">
                     <td class="bg-gray-100 font-semibold px-1 whitespace-nowrap">PROYECTO:</td>
-                    <td class="px-1">ARENA BLANCA</td>
+                    <td class="p-1">ARENA BLANCA</td>
                 </tr>
                 <tr class="border-b">
                     <td class="bg-gray-100 font-semibold px-1 whitespace-nowrap">DISTRITO:</td>
-                    <td class="px-1">PIMENTEL - CHICLAYO</td>
+                    <td class="p-1">PIMENTEL - CHICLAYO</td>
                 </tr>
                 <tr class="border-b">
                     <td class="bg-gray-100 font-semibold px-1 whitespace-nowrap">EMPRESA PROMOTORA:</td>
-                    <td class="px-1">RVB CONSTRUCTORA S.A.C.</td>
+                    <td class="p-1">RVB CONSTRUCTORA S.A.C.</td>
                 </tr>
                 <tr class="border-b">
                     <td class="bg-gray-100 font-semibold px-1 whitespace-nowrap">RUC:</td>
-                    <td class="px-1">20613566377</td>
+                    <td class="p-1">20613566377</td>
                 </tr>
                 <tr class="border-b">
                     <td class="bg-gray-100 font-semibold px-1 whitespace-nowrap">PARTIDA:</td>
-                    <td class="px-1">11387476</td>
+                    <td class="p-1">11387476</td>
                 </tr>
                 <tr class="border-b">
                     <td class="bg-gray-100 font-semibold px-1 whitespace-nowrap">DIRECCIÓN FISCAL:</td>
-                    <td class="px-1">CALLE 7 DE ENERO #740 - CERCADO CHICLAYO</td>
+                    <td class="p-1">CALLE 7 DE ENERO #740 - CERCADO CHICLAYO</td>
                 </tr>
                 <tr>
                     <td class="bg-gray-100 font-semibold px-1 whitespace-nowrap">CLIENTE:</td>
-                    <td class="px-1">JOSE PEDRO PEREZ</td>
+                    <td class="p-1">
+                        <input type="text" name="cliente" id="cliente" v-model="clienteCotizacion"
+                            class="w-full border-none focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-xs" />
+                    </td>
                 </tr>
+
             </tbody>
         </table>
 
@@ -72,9 +77,18 @@
         <!-- Ubicación -->
         <div class="grid grid-cols-4 text-center rounded-md border border-gray-500">
             <div class="font-bold border-r border-gray-400">MZ</div>
-            <div class="border-r border-gray-400">A</div>
+            <div class="border-r border-gray-400">
+                <select name="manzana" id="manzana" v-model="manzanaSeleccionada">
+                    <option v-for="manzana in manzanasDisponibles" :key="manzana" :value="manzana">{{ manzana }}
+                    </option>
+                </select>
+            </div>
             <div class="font-bold border-r border-gray-400">LT</div>
-            <div>1</div>
+            <div>
+                <select name="lote" id="lote" v-model="loteSeleccionado">
+                    <option v-for="lote in lotesDisponibles" :key="lote" :value="lote">{{ lote }}</option>
+                </select>
+            </div>
         </div>
 
         <!-- Área y precio -->
@@ -88,22 +102,26 @@
                     <tr>
                         <td class="border border-gray-300 bg-gray-100 font-semibold px-1 whitespace-nowrap align-top">
                             ÁREA CONSTRUIDA:</td>
-                        <td class="border border-gray-300 px-1">{{ areaConstruida }}</td>
+                        <td class="border border-gray-300 px-1">
+                            <select name="areaConstruida" id="areaConstruida" v-model="areaConstruida">
+                                <option v-for="area in areasConstruidas" :key="area" :value="area">{{ area }}</option>
+                            </select>
+                        </td>
                     </tr>
                     <tr>
                         <td class="border border-gray-300 bg-gray-100 font-semibold px-1 whitespace-nowrap align-top">
                             ÁREA TOTAL:</td>
-                        <td class="border border-gray-300 px-1">90.25 m²</td>
+                        <td class="border border-gray-300 px-1">{{ areaTotal }}</td>
                     </tr>
                     <tr>
                         <td class="border border-gray-300 bg-gray-100 font-semibold px-1 whitespace-nowrap align-top">
                             UBICACIÓN:</td>
-                        <td class="border border-gray-300 px-1">CALLE</td>
+                        <td class="border border-gray-300 px-1">{{ ubicacion }}</td>
                     </tr>
                     <tr>
                         <td class="border border-gray-300 bg-gray-100 font-semibold px-1 whitespace-nowrap align-top">
                             PRECIO:</td>
-                        <td class="border border-gray-300 px-1 font-bold text-red-600">S/115,015</td>
+                        <td class="border border-gray-300 px-1 font-bold text-red-600">{{ formatoSoles(precio) }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -289,11 +307,14 @@
                 <p>IVAN RIMARACHIN</p>
             </div>
         </div>
-
     </div>
 </template>
 <script lang="ts" setup>
-const areaConstruida = '37.50 m²';
+import { onMounted, ref, watch, computed } from 'vue';
+import { useCasasStore } from '@/stores/casasStore'
+import { storeToRefs } from 'pinia'
+
+const areaConstruida = ref('37.50 m²');
 const modelosCasas = [
     {
         tipo: 'CASA TIPO 1',
@@ -324,7 +345,7 @@ const modelosCasas = [
     {
         tipo: 'CASA TIPO 3',
         numeroPisos: 2,
-        areaConstruida: '81.80 m²',
+        areaConstruida: '81.75 m²',
         ambientes: {
             primerPiso: [
                 '01 AMBIENTE PARA SALA, COMEDOR Y COCINA',
@@ -341,7 +362,122 @@ const modelosCasas = [
         }
     }
 ];
+const clienteCotizacion = ref('JOSE PEDRO PEREZ');
 
-const modeloSeleccionado = modelosCasas.find(casa => casa.areaConstruida === areaConstruida);
+const areasConstruidas = ref(['37.50 m²', '50.60 m²', '81.75 m²']);
+
+const modeloSeleccionado = ref(modelosCasas[0]);
+const manzanaSeleccionada = ref('');
+const loteSeleccionado = ref('');
+
+const casasStore = useCasasStore()
+const { casas } = storeToRefs(casasStore)
+const { cargarCasas } = casasStore
+
+onMounted(() => {
+    cargarCasas()
+})
+
+watch(areaConstruida, (nuevaArea) => {
+    const modelo = modelosCasas.find(casa => casa.areaConstruida === nuevaArea);
+    if (modelo) {
+        modeloSeleccionado.value = modelo;
+    }
+});
+
+function convertirArea(area: string): number {
+    return parseFloat(area.replace(/[^\d.]/g, '')) // quita " m²" y deja solo el número
+}
+
+const manzanasDisponibles = computed(() => {
+    if (!casas.value.data) return []
+
+    const areaNumero = convertirArea(areaConstruida.value)
+
+    return [...new Set(
+        casas.value.data
+            .filter(casa => casa.modulo_m2 === areaNumero)
+            .map(casa => casa.manzana)
+    )]
+})
+
+
+const lotesDisponibles = computed(() => {
+    if (!casas.value.data) return []
+
+    const areaNumero = convertirArea(areaConstruida.value)
+
+    return [...new Set(
+        casas.value.data
+            .filter(casa =>
+                casa.modulo_m2 === areaNumero &&
+                casa.manzana === manzanaSeleccionada.value
+            )
+            .map(casa => casa.lote)
+    )]
+})
+
+const areaTotal = computed(() => {
+    if (!casas.value.data || !manzanaSeleccionada.value || !loteSeleccionado.value) return '0.00 m²'
+    const areaNumero = convertirArea(areaConstruida.value)
+
+    const casa = casas.value.data.find(c =>
+        c.modulo_m2 === areaNumero &&
+        c.manzana === manzanaSeleccionada.value &&
+        c.lote === loteSeleccionado.value
+    )
+
+    return casa ? `${casa.area_total} m²` : '0.00 m²'
+})
+
+const ubicacion = computed(() => {
+    if (!casas.value.data || !manzanaSeleccionada.value || !loteSeleccionado.value) return ''
+    const areaNumero = convertirArea(areaConstruida.value)
+
+    const casa = casas.value.data.find(c =>
+        c.modulo_m2 === areaNumero &&
+        c.manzana === manzanaSeleccionada.value &&
+        c.lote === loteSeleccionado.value
+    )
+
+    return casa ? casa.ubicacion : ''
+})
+
+const precio = computed(() => {
+    if (!casas.value.data || !manzanaSeleccionada.value || !loteSeleccionado.value) return 0
+
+    const areaNumero = convertirArea(areaConstruida.value)
+
+    const casa = casas.value.data.find(c =>
+        c.modulo_m2 === areaNumero &&
+        c.manzana === manzanaSeleccionada.value &&
+        c.lote === loteSeleccionado.value
+    )
+
+    if (casa) {
+        return casa.inicial_3000 ?? casa.inicial_5000 ?? 0
+    }
+
+    return 0
+})
+
+
+function formatoSoles(valor: number | null | undefined): string {
+    if (!valor) return '--'
+    return new Intl.NumberFormat('es-PE', {
+        style: 'currency',
+        currency: 'PEN',
+        minimumFractionDigits: 2
+    }).format(valor)
+}
+
+watch(manzanasDisponibles, (nuevas) => {
+    if (nuevas.length) manzanaSeleccionada.value = nuevas[0]
+})
+
+watch(lotesDisponibles, (nuevos) => {
+    if (nuevos.length) loteSeleccionado.value = nuevos[0]
+})
+
 
 </script>
